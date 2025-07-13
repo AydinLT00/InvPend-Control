@@ -47,10 +47,11 @@ The control pipeline consists of four key components:
 
 1.  **Clone or Download:** Get the project files onto your local machine.
 2.  **Requirements:** Ensure you have **MATLAB**, **Simulink**, and the **Control System Toolbox**.
-3.  **Run the Setup Script:** Open MATLAB, navigate to the project folder, and run the main script (e.g., `inverted_pendulum_setup.m`).
+3.  **Run the Setup Script:** Open MATLAB, navigate to the project folder, and run the main script (e.g., `main.m`).
     ```matlab
     % In the MATLAB Command Window
-    >> inverted_pendulum_setup
+    >> main.m
+    >> % open simulink and run StateObserv_StateFeedback.slx
     ```
 4.  **Done!** The script will:
     -   Initialize all physical parameters (`M`, `m`, `L`, etc.).
