@@ -1,0 +1,76 @@
+% initial parameters (run before simulink)
+m = 1;
+M = 5;
+L = 2;
+g = -10;
+d = 1;
+
+b = 1; % pendulum up (b=1)
+
+A = [0   1          0               0;
+     0  -d/M        b*m*g/M         0;
+     0   0          0               1;
+     0  -b*d/(M*L) -b*(m+M)*g/(M*L) 0];
+
+B = [0; 1/M; 0; b/(M*L)];
+C = [1 0 0 0;
+     0 0 1 0];
+%% To visualize the pendulum (run after simulink)
+x = out.u_out.Data;
+t = out.u_out.Time;
+
+for k=1:10:length(t)
+    drawpend(x(k,:),m,M,L);
+end
+
+%%
+% =======================
+% D matrix is almost always zero for mechanical systems
+D = [0; 0];
+
+% Create a state-space object for analysis (optional, but good practice)
+sys = ss(A, B, C, D);
+
+
+%% Step 3: Design the State-Feedback Controller Gain (K)
+% We use LQR to find the optimal gain K for the control law u = -Kx.
+% We need to define our performance weights Q and R.
+
+% Q penalizes state deviations [x, x_dot, theta, theta_dot]
+% Make the penalty for theta (angle) high to prioritize stabilization.
+% Make the penalty for x (position) non-zero to control position.
+Q = diag([100, 1, 100, 1]); 
+
+% R penalizes the control effort (the force u)
+R = 0.000001;
+
+% Calculate the LQR gain K
+K = lqr(A, B, Q, R);
+
+
+%% Step 4: Design the State Observer Gain (L)
+% We want the observer to be faster than the controller.
+% A good rule of thumb is to make the observer poles 2-5 times faster 
+% than the controller poles.
+
+% First, find the poles of the closed-loop controller
+controller_poles = eig(A - B*K);
+
+% Choose the desired observer poles to be 3x faster
+observer_poles = 10 * controller_poles;
+
+% Calculate the observer gain L using pole placement.
+% The command uses the transpose of A and C, and the final result must be transposed back.
+% This is due to the duality between controllability and observability.
+Lc = place(A', C', observer_poles)';
+%% Display the Results
+disp('System Matrix A:');
+disp(A);
+disp('Input Matrix B:');
+disp(B);
+disp('Output Matrix C:');
+disp(C);
+disp('State-Feedback Gain K:');
+disp(K);
+disp('Observer Gain L:');
+disp(Lc);
