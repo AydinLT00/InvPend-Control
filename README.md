@@ -77,7 +77,11 @@ All key parameters can be easily modified in the main setup script.
     -   `observer_poles`: The desired poles for the observer. The observer is typically designed to be 2-5 times faster than the controller poles (`eig(A-B*K)`).
 
 ---
+## 🙏 Acknowledgements
 
+The `drawpend.m` function used for animating the pendulum is based on the MATLAB code provided by **Steven L. Brunton** and **J. Nathan Kutz** in their excellent book, *[Data-Driven Science and Engineering: Machine Learning, Dynamical Systems, and Control](http://databookuw.com/)*. Their clear examples were invaluable for the visualization component of this project.
+
+---
 ## 📄 License
 
 This project is licensed under the MIT License.
